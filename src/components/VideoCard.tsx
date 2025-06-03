@@ -20,6 +20,10 @@ export const VideoCard = ({
   togglePlayPause: () => void;
   isPlaying: boolean;
 }) => {
+
+
+
+
   return (
     <div
       key={`${videoData.id}-${index}`}
@@ -42,6 +46,7 @@ export const VideoCard = ({
             loop
             autoPlay={isCurrent}
             muted={isMuted}
+            preload="auto"
             playsInline
             poster={videoData.thumbnail}
             aria-label={`Video titled ${videoData.title}`}

@@ -97,6 +97,19 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
     }
   };
 
+  const currentVideo = videoRefs.current[currentIndex];
+  if (currentVideo) {
+    currentVideo.muted = isMuted;
+    if (currentVideo.readyState >= 3) {
+      currentVideo.play().catch(() => {});
+    } else {
+      currentVideo.oncanplay = () => {
+        currentVideo.play().catch(() => {});
+      };
+    }
+    setIsPlaying(true);
+  }
+
   return (
     <div className="py-12 bg-fog-balanced">
       <section className="responsive">
