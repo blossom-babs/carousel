@@ -39,9 +39,12 @@ export const VideoCard = ({
       >
         <div className="w-72 md:w-80 h-full relative">
           <video
-            ref={(el) => {
+           ref={(el) => {
+            if (el) {
               videoRefs.current[index] = el;
-            }}
+              el.muted = isMuted;
+            }
+          }}
             className="w-full h-full object-cover"
             loop
             autoPlay={isCurrent}

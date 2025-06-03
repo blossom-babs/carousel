@@ -12,39 +12,46 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemWidth = useResponsiveItemWidth();
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   const extendedVideos = [...sampleVideos, ...sampleVideos, ...sampleVideos];
   const getActualVideoIndex = (index: number) =>  index % sampleVideos.length;
   const getVideoData = (index: number) => sampleVideos[getActualVideoIndex(index)];
   
 
-  useEffect(() => {
-    const currentVideo = videoRefs.current[currentIndex];
-  
-    if (!currentVideo) return;
-  
-    currentVideo.muted = isMuted;
-  
-    const tryPlay = () => {
-      currentVideo
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch((error) => {
-          console.warn("Autoplay failed:", error);
+   // Autoplay function that handles browser restrictions
+   const tryAutoplay = (video: HTMLVideoElement) => {
+    const playPromise = video.play();
+    
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(error => {
+          console.log("Autoplay was prevented:", error);
+          // Show play button if autoplay fails
           setIsPlaying(false);
         });
-    };
-  
-    if (currentVideo.readyState >= 3) {
-      tryPlay();
-    } else {
-      const onCanPlay = () => {
-        tryPlay();
-        currentVideo.removeEventListener("canplay", onCanPlay);
-      };
-      currentVideo.addEventListener("canplay", onCanPlay);
     }
-  
+  };
+
+  useEffect(() => {
+    const currentVideo = videoRefs.current[currentIndex];
+    if (!currentVideo) return;
+    
+    // Ensure video is muted to comply with autoplay policies
+    currentVideo.muted = true;
+    setIsMuted(true);
+    
+    // Only try to autoplay if user has interacted with the page
+    if (hasUserInteracted) {
+      tryAutoplay(currentVideo);
+    } else {
+      // Try autoplay on initial load
+      tryAutoplay(currentVideo);
+    }
+
     // Pause all other videos
     videoRefs.current.forEach((video, i) => {
       if (video && i !== currentIndex) {
@@ -52,7 +59,24 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
         video.currentTime = 0;
       }
     });
-  }, [currentIndex, isMuted]);
+  }, [currentIndex, hasUserInteracted]);
+
+  // Track user interaction to enable autoplay
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      setHasUserInteracted(true);
+    };
+
+    window.addEventListener('click', handleUserInteraction);
+    window.addEventListener('touchstart', handleUserInteraction);
+    window.addEventListener('keydown', handleUserInteraction);
+
+    return () => {
+      window.removeEventListener('click', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+      window.removeEventListener('keydown', handleUserInteraction);
+    };
+  }, []);
   
 
   // Keyboard navigation
