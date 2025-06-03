@@ -1,0 +1,52 @@
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  width: 50%;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+  color: #4f6076;
+}
+
+nav {
+  padding: 1.5rem 0;
+  background-color: #f7f8f6;
+}
+
+.info-bar{
+  color: #F7F8F6;
+  display: flex;
+  justify-content: space-between;
+  padding: .5rem 0;
+}
+
+.info-bar .divider{
+  background-color: #f7f8f6;
+  width: 2px;
+  height: 10px;
+}
+
+.info-bar ul{
+  display: flex;
+ align-items: center;
+ gap:28px;
+ 
+}
+
+.info-bar ul li{
+font-weight: 600;
+font-size: 12px;
+line-height: 16px;
+cursor: pointer;
+}
+
+@media screen and (max-width:768px){
+  .info-bar ul{
+    display: none;
+  }
+
+  nav ul{
+    display: none;
+  }
+}

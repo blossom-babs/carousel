@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Campton';
+  src: url('/src/assets/fonts/Campton/CamptonMedium.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.campton {
+  font-family: 'Campton', sans-serif;
+}
+
+body{
+  font-family: 'Campton', sans-serif;
+}
+
+
+@theme{
+  --color-cozey-sky-bold: #69A2FF;
+  --color-midnight-balanced: #4F6076;
+  --color-midnight-bold: #0B2341;
+  --color-fog-soft:#F7F8F6;
+  --color-fog-balanced:#ECEBE7;
+}
+
+
+.nav-button {
+  @apply bg-white border-white hover:bg-gray-50 border rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 cursor-pointer hover:border-gray-400;
+}
+
+.responsive{
+  @apply w-[90%] mx-auto;
+}
+
+.control-btn{
+  @apply transition-all duration-200  hover:cursor-pointer;
+}
+
+.text-lg-semi{
+  @apply text-lg font-semibold;
+}
