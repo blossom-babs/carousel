@@ -42,7 +42,7 @@ cursor: pointer;
 }
 
 @media screen and (max-width:768px){
-  .info-bar ul{
+  .info-bar .site-options{
     display: none;
   }
 
