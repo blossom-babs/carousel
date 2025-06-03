@@ -19,22 +19,41 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
   
 
   useEffect(() => {
-    // Auto-play the current video
     const currentVideo = videoRefs.current[currentIndex];
-    if (currentVideo) {
-      currentVideo.muted = isMuted;
-      currentVideo.play();
-      setIsPlaying(true);
+  
+    if (!currentVideo) return;
+  
+    currentVideo.muted = isMuted;
+  
+    const tryPlay = () => {
+      currentVideo
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((error) => {
+          console.warn("Autoplay failed:", error);
+          setIsPlaying(false);
+        });
+    };
+  
+    if (currentVideo.readyState >= 3) {
+      tryPlay();
+    } else {
+      const onCanPlay = () => {
+        tryPlay();
+        currentVideo.removeEventListener("canplay", onCanPlay);
+      };
+      currentVideo.addEventListener("canplay", onCanPlay);
     }
-
+  
     // Pause all other videos
-    videoRefs.current.forEach((video, index) => {
-      if (video && index !== currentIndex) {
+    videoRefs.current.forEach((video, i) => {
+      if (video && i !== currentIndex) {
         video.pause();
         video.currentTime = 0;
       }
     });
   }, [currentIndex, isMuted]);
+  
 
   // Keyboard navigation
   useEffect(() => {
@@ -97,18 +116,6 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
     }
   };
 
-  const currentVideo = videoRefs.current[currentIndex];
-  if (currentVideo) {
-    currentVideo.muted = isMuted;
-    if (currentVideo.readyState >= 3) {
-      currentVideo.play().catch(() => {});
-    } else {
-      currentVideo.oncanplay = () => {
-        currentVideo.play().catch(() => {});
-      };
-    }
-    setIsPlaying(true);
-  }
 
   return (
     <div className="py-12 bg-fog-balanced">
