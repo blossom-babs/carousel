@@ -20,15 +20,15 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
   
 
    // Autoplay function that handles browser restrictions
-   const tryAutoplay = async (video: HTMLVideoElement) => {
-    try {
-      await video.play();
-      setIsPlaying(true);
-    } catch (error) {
-      console.log("Autoplay error:", error);
-      setIsPlaying(false);
-    }
-  };
+  //  const tryAutoplay = async (video: HTMLVideoElement) => {
+  //   try {
+  //     await video.play();
+  //     setIsPlaying(true);
+  //   } catch (error) {
+  //     console.log("Autoplay error:", error);
+  //     setIsPlaying(false);
+  //   }
+  // };
   
   useEffect(() => {
     const currentVideo = videoRefs.current[currentIndex];
