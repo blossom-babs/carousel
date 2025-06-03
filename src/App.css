@@ -27,7 +27,7 @@ nav {
   height: 10px;
 }
 
-.info-bar ul{
+.info-bar .site-options{
   display: flex;
  align-items: center;
  gap:28px;
