@@ -53,4 +53,8 @@ cursor: pointer;
   .cta{
     flex-direction: column;
   }
+  .cta .input-field{
+    width: 100%;
+
+  }
 }
