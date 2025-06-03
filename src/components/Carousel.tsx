@@ -20,46 +20,49 @@ const VideoCarousel = ({ sampleVideos }: { sampleVideos: Video[] }) => {
   
 
    // Autoplay function that handles browser restrictions
-   const tryAutoplay = (video: HTMLVideoElement) => {
-    const playPromise = video.play();
-    
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(error => {
-          console.log("Autoplay was prevented:", error);
-          // Show play button if autoplay fails
-          setIsPlaying(false);
-        });
+   const tryAutoplay = async (video: HTMLVideoElement) => {
+    try {
+      await video.play();
+      setIsPlaying(true);
+    } catch (error) {
+      console.log("Autoplay error:", error);
+      setIsPlaying(false);
     }
   };
-
+  
   useEffect(() => {
     const currentVideo = videoRefs.current[currentIndex];
     if (!currentVideo) return;
-    
-    // Ensure video is muted to comply with autoplay policies
+  
     currentVideo.muted = true;
     setIsMuted(true);
-    
-    // Only try to autoplay if user has interacted with the page
-    if (hasUserInteracted) {
-      tryAutoplay(currentVideo);
-    } else {
-      // Try autoplay on initial load
-      tryAutoplay(currentVideo);
-    }
-
-    // Pause all other videos
+  
+    // Pause all other videos immediately
     videoRefs.current.forEach((video, i) => {
       if (video && i !== currentIndex) {
         video.pause();
         video.currentTime = 0;
       }
     });
+  
+    // Define and run an async function to handle delayed playback
+    const autoplaySafely = async () => {
+      // Small delay to ensure all pauses complete before play
+      await new Promise((resolve) => setTimeout(resolve, 100));
+  
+      try {
+        await currentVideo.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.warn("Autoplay failed:", error);
+        setIsPlaying(false);
+      }
+    };
+  
+    autoplaySafely();
+  
   }, [currentIndex, hasUserInteracted]);
+  
 
   // Track user interaction to enable autoplay
   useEffect(() => {
