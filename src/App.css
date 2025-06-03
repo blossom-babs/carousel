@@ -49,4 +49,8 @@ cursor: pointer;
   nav ul{
     display: none;
   }
+
+  .cta{
+    flex-direction: column;
+  }
 }
