@@ -40,6 +40,7 @@ export const VideoCard = ({
             }}
             className="w-full h-full object-cover"
             loop
+            autoPlay={isCurrent}
             muted={isMuted}
             playsInline
             poster={videoData.thumbnail}

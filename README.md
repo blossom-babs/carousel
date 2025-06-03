@@ -1,54 +1,81 @@
-# React + TypeScript + Vite
+# Carousel Component
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Built with React, Tailwind CSS, and TypeScript, it is both responsive and accessible.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Key Features
 
-## Expanding the ESLint configuration
+* **Infinite Scrolling Illusion:** Uses repeated video sets to simulate infinite navigation in either direction.
+* **Responsive Design:** Dynamically adjusts item width using a custom `useResponsiveItemWidth` hook.
+* **Keyboard Navigation:** Left and right arrow keys allow navigation through the carousel.
+* **Auto-Play + Mute Controls:** Automatically plays the current video and pauses others; includes mute/play toggles.
+* **Accessibility Enhancements:**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+  * `aria-label` on the carousel container
+  * `aria-current` on the active video card
+  * `aria-live` region announces title changes
+  * Descriptive labels for interactive controls
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+---
+
+## Design Decisions
+
+### 1. Infinite Scroll Setup
+
+To support seamless navigation, the list of videos is repeated three times. When the user reaches the end of a set, the index resets to the central copy.
+
+### 2. Accessibility Focus
+
+* Interactive buttons (mute/play) have `aria-label`s
+* Video cards use `role="group"` and `aria-current="true"`
+* Video title changes are announced via `aria-live="polite"`
+
+### 3. Performance
+
+* Only one video plays at a time
+* Non-active videos are paused and reset to reduce CPU usage
+* `useEffect` hooks efficiently handle state transitions and input events
+
+### 4. Reusability
+
+* `VideoCard` is extracted as a standalone component
+* `useResponsiveItemWidth` can be reused in other UI components
+
+---
+
+## ✅ Future Improvements
+
+* Add swipe gestures for touch devices
+* Lazy load off-screen videos
+* Add dots or thumbnail previews for navigation context
+* Animate in/out transitions for smoother experience
+* Support captions/subtitles for videos
+
+---
+
+## 📂 File Structure (relevant parts)
+
+```
+src/
+├── components/
+│   ├── VideoCarousel.tsx
+│   └── VideoCard.tsx
+├── hooks/
+│   └── useResponsiveItemWidth.ts
+├── types/
+│   └── Video.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+ `sampleVideos` is an array of objects with:
+
+```ts
+interface Video {
+  id: string;
+  title: string;
+  url: string;
+  thumbnail: string;
+}
 ```
